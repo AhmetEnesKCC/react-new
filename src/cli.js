@@ -13,8 +13,13 @@ import execCommands from "../methods/execCommands";
 import fs from "fs";
 import Listr from "listr";
 import { title } from "process";
+import figlet from "figlet";
 var globalValue = "New_Project";
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
+
+// LOGO
+clear();
+console.log(chalk.green(figlet.textSync("React New App", { horizontalLayout: "full" })));
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
