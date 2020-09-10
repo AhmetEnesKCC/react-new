@@ -18,8 +18,11 @@ var globalValue = "New_Project";
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
 // LOGO
+
 clear();
+console.log("\n");
 console.log(chalk.green(figlet.textSync("React New App", { horizontalLayout: "full" })));
+console.log("\n");
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
