@@ -1,4 +1,4 @@
-# REACT-NEW
+# REACT NEW APP
 
 ---
 
@@ -21,7 +21,7 @@ or
 ## Usage
 
 ```sh
-    react-new
+    react-new-app
 ```
 
 - give name to project

@@ -70,7 +70,7 @@ async function promptForMissingOptions(options) {
     type: "checkbox",
     name: "options",
     message: "please select which one do you want to use",
-    choices: ["redux", "sass", "react-router" /*, "typescript"*/], // will add TS later
+    choices: ["redux", "sass", "react-router", "bootstrap", "font awesome 5" /*, "typescript"*/], // will add TS later
   });
 
   const answers = await inquirer.prompt(questions);
@@ -92,6 +92,14 @@ export async function cli(args) {
   }
   if (options.options.includes("React-Router".toLowerCase())) {
     mustInstallPackages.push("react-router-dom", "react-router");
+  }
+  if (options.options.includes("bootstrap")) {
+    mustInstallPackages.push("bootstrap","react-bootstrap");
+  }
+  if (options.options.includes("font awesome 5")) {
+    mustInstallPackages.push("@fortawesome/fontawesome-svg-core", " @fortawesome/free-solid-svg-icons", " @fortawesome/react-fontawesome");
+  ]
+
   }
   let yarn = true;
   const testYarn = new Listr([
