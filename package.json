@@ -1,8 +1,8 @@
 {
   "name": "react-new-app",
-  "version": "0.1.0",
-  "description": "sample node cli",
-  "main": "src/index.js",
+  "version": "0.1.4",
+  "description": "react cli",
+  "main": "src/cli.js",
   "bin": {
     "react-new-app": "bin/react-new"
   },
@@ -17,8 +17,8 @@
     "react-app",
     "react"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "AhmetEnesKCC",
+  "license": "MIT",
   "dependencies": {
     "arg": "^4.1.3",
     "chalk": "^4.1.0",
@@ -38,7 +38,10 @@
   },
   "files": [
     "boilerplates/",
-    "src/"
+    "src/",
+    "images",
+    "methods",
+    "bin"
   ],
   "devDependencies": {}
 }
