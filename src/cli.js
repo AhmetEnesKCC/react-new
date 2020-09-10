@@ -94,12 +94,14 @@ export async function cli(args) {
     mustInstallPackages.push("react-router-dom", "react-router");
   }
   if (options.options.includes("bootstrap")) {
-    mustInstallPackages.push("bootstrap","react-bootstrap");
+    mustInstallPackages.push("bootstrap", "react-bootstrap");
   }
   if (options.options.includes("font awesome 5")) {
-    mustInstallPackages.push("@fortawesome/fontawesome-svg-core", " @fortawesome/free-solid-svg-icons", " @fortawesome/react-fontawesome");
-  ]
-
+    mustInstallPackages.push(
+      "@fortawesome/fontawesome-svg-core",
+      " @fortawesome/free-solid-svg-icons",
+      " @fortawesome/react-fontawesome"
+    );
   }
   let yarn = true;
   const testYarn = new Listr([
