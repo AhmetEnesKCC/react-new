@@ -1,10 +1,10 @@
 {
   "name": "@your_npm_username/create-project",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "sample node cli",
   "main": "src/index.js",
   "bin": {
-    "re-cli-all": "bin/create-project"
+    "react-new": "bin/react-new"
   },
   "publishConfig": {
     "access": "public"
@@ -14,7 +14,8 @@
   },
   "keywords": [
     "cli",
-    "create-project"
+    "react-app",
+    "react"
   ],
   "author": "",
   "license": "ISC",
@@ -24,7 +25,9 @@
     "clear": "^0.1.0",
     "clui": "^0.3.6",
     "esm": "^3.2.25",
+    "execa": "^4.0.3",
     "inquirer": "^7.3.3",
+    "listr": "^0.14.3",
     "ncp": "^2.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

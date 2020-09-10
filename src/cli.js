@@ -1,57 +1,32 @@
+// Will add typescipt support later
+
 import arg from "arg";
 import inquirer from "inquirer";
-import { execSync, exec } from "child_process";
-import CLI from "clui";
+const execa = require("execa");
+// import CLI from "clui";
+import { createNpmFile, createManifestJson } from "../methods/execCommands";
 import path from "path";
 import clear from "clear";
-import { stat, fstat } from "fs";
 import chalk from "chalk";
 import createPureReact from "../methods/pureReact";
 import execCommands from "../methods/execCommands";
 import fs from "fs";
-import shell from "shelljs";
-const Spinner = CLI.Spinner;
+import Listr from "listr";
+import { title } from "process";
 var globalValue = "New_Project";
-const mustInstallPackages = ["react", "react-dom"];
-
-function parseArgumentOptions(rawArgs) {
-  const args = arg(
-    {
-      "--git": Boolean,
-      "--yes": Boolean,
-      "--install": Boolean,
-      "-g": "--git",
-      "-y": "--yes",
-      "-i": "--install",
-    },
-    {
-      argv: rawArgs.slice(2),
-    }
-  );
-  return {
-    skipPrompts: args["--yes"] || false,
-    git: args["--git"] || false,
-    template: args._[0],
-    runInstall: args["--install"] || false,
-    project_name: "New",
-    base: args._[0],
-    redux: false,
-    options: false,
-  };
-}
+const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
   const defaultBase = "Function";
-  if (options.skipPrompts) {
-    return {
-      ...options,
-      template: options.template || defaultTemplate,
-    };
-  }
 
   const questions = [];
   const autoFix = (string) => {
+    for (let i = 0; i < string.length; i++) {
+      if (string[i] === " " && string[i + 1] === " ") {
+        string = string.slice(i, 1);
+      }
+    }
     string = string.replace("-", "_").replace(" ", "_").toLowerCase();
     return string;
   };
@@ -62,7 +37,10 @@ async function promptForMissingOptions(options) {
     default: "New Project",
     validate: async function (value) {
       if (value.length > 0) {
-        if (fs.readdirSync(process.cwd()).indexOf(value) >= 0) {
+        if (
+          fs.readdirSync(process.cwd()).indexOf(value) >= 0 ||
+          (fs.readdirSync(process.cwd()).indexOf("new_project") >= 0 && value === "New Project")
+        ) {
           return "There is already a folder named : " + autoFix(value);
         }
         if (value !== autoFix(value)) {
@@ -92,64 +70,96 @@ async function promptForMissingOptions(options) {
     type: "checkbox",
     name: "options",
     message: "please select which one do you want to use",
-    choices: ["redux", "sass", "react-router", "typescript"],
+    choices: ["redux", "sass", "react-router" /*, "typescript"*/], // will add TS later
   });
-  if (!options.template) {
-    questions.push({
-      type: "list",
-      name: "template",
-      message: "Please choose which one do you want to use",
-      choices: ["JavaScript", "TypeScript"],
-      default: defaultTemplate,
-    });
-  }
-  questions.push({
-    type: "list",
-    name: "redux",
-    message: "Do you want to use redux",
-    choices: ["Yes", "No"],
-    default: "No",
-  });
-  if (!options.git) {
-    questions.push({
-      type: "confirm",
-      name: "git",
-      message: "init git repo",
-      default: false,
-    });
-  }
 
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
-    template: options.template || answers.template,
     base: options.base || answers.base,
-    git: options.git || answers.git,
     redux: options.redux || answers.redux,
     options: options.options || answers.options,
   };
 }
 
 export async function cli(args) {
-  const cli_func = async () => {
-    let options = await parseArgumentOptions(args);
-    let packageString = "";
-    options = await promptForMissingOptions(options);
-    console.log(options.options);
-    console.log(options.project_name);
+  let options = await promptForMissingOptions(args);
+  if (options.options.includes("Redux".toLowerCase())) {
+    mustInstallPackages.push("redux", "react-redux", "redux-thunk");
+  }
+  if (options.options.includes("Sass".toLowerCase())) {
+    mustInstallPackages.push("gulp-sass", "gulp", "gulp-autoprefixer", "gulp-minify-css", "gulp-sourcemaps");
+  }
+  if (options.options.includes("React-Router".toLowerCase())) {
+    mustInstallPackages.push("react-router-dom", "react-router");
+  }
+  let yarn = true;
+  const testYarn = new Listr([
+    {
+      title: "Testing for yarn",
+      task: (ctx, task) =>
+        execa("yarn").catch(() => {
+          yarn = false;
+          task.skip("Installing yarn");
+        }),
+    },
+    {
+      title: "Installing Yarn",
+      enabled: !yarn,
+      task: () => execa("npm", ["install", "yarn", "-g"]),
+    },
+  ]);
+  await testYarn.run().catch((err) => console.log(err));
+  let packageArray = [];
 
-    if (options.redux === "Yes") {
-      mustInstallPackages.push("redux", "react-redux", "redux-thunk");
-    }
-    console.log(options);
-    // execCommands("npm init -y");
-    await createPureReact(options);
-    await console.log(execSync(`cd ${options.project_name} && npm init -y`, { encoding: "utf-8" }));
-    mustInstallPackages.map((pack) => {
-      console.log(
-        execSync(`cd ${process.cwd()} && cd ${options.project_name} && npm install ${pack}`, { encoding: "utf-8" })
-      );
+  let installPackages = mustInstallPackages.map((pack) => {
+    packageArray.push({
+      title: "Installing " + pack,
+      task: () => execa("yarn", ["add", pack], { cwd: path.join(process.cwd(), options.project_name) }),
     });
-  };
-  cli_func();
+  });
+
+  const tasks = new Listr([
+    {
+      title: "Creating Files",
+      task: async () => {
+        return new Listr(
+          [
+            {
+              title: "copying folders and files",
+              task: async () => {
+                return createPureReact(options);
+              },
+            },
+            {
+              title: "creating package.json",
+              task: async () => {
+                createNpmFile(options, mustInstallPackages);
+                createManifestJson(options);
+              },
+            },
+          ],
+          { concurrent: true }
+        );
+      },
+    },
+    {
+      title: "Installing Dependencies",
+      task: () => new Listr(packageArray),
+    },
+  ]);
+
+  await tasks.run().catch((err) => console.log(err));
+  console.log(chalk.yellow("Thank you for used react-new"));
+  console.log(chalk.green("Recommended"));
+  console.log(`cd ${options.project_name}`);
+  console.log(`npm start`);
+  if (options.options.includes("sass")) {
+    console.log(chalk.red("For sass ==>"));
+    console.log("cd src");
+    console.log(`gulp`);
+  }
+  console.log("Thank You For used React New");
+
+  // execCommands("npm init -y");
 }
