@@ -1,0 +1,9 @@
+{
+    "short_name": "myapp",
+    "name": "React App made with react-new",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }
+  
