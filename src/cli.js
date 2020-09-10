@@ -128,6 +128,24 @@ export async function cli(args) {
       task: () => execa("yarn", ["add", pack], { cwd: path.join(process.cwd(), options.project_name) }),
     });
   });
+  var installedVersion = "";
+  var latestVersion = "";
+
+  var Latest = true;
+  let isReactNewAppLatest = () => {
+    execa("npm", ["list", "react-new-app", "-g"]).catch((result) => {
+      var index = result.indexOf("react-new-app");
+      installedVersion = result.slice(index + 13, index + 18);
+      console.log(installedVersion);
+    });
+    execa("npm", ["view", "react-new-app", "version"]).catch((result) => {
+      latestVersion = result;
+      console.log(latestVersion);
+    });
+    if (latestVersion != installedVersion) {
+      Latest = false;
+    }
+  };
 
   const tasks = new Listr([
     {
@@ -146,6 +164,24 @@ export async function cli(args) {
               task: async () => {
                 createNpmFile(options, mustInstallPackages);
                 createManifestJson(options);
+              },
+            },
+            {
+              title: "Checking version of React New App",
+              task: () => {
+                execa("npm", ["list", "react-new-app", "-g"]).then((result) => {
+                  if (result.stdout !== "") {
+                    var index = result.stdout.indexOf("react-new-app");
+                    installedVersion = result.stdout.slice(index + 14, index + 19);
+                  }
+                });
+                execa("npm", ["view", "react-new-app", "version"]).then((result) => {
+                  latestVersion = result.stdout;
+                });
+
+                if (latestVersion !== installedVersion) {
+                  Latest = false;
+                }
               },
             },
           ],
@@ -170,6 +206,11 @@ export async function cli(args) {
     console.log(`gulp`);
   }
   console.log("Thank You For used React New");
+  if (Latest) {
+    console.log(chalk.yellow("\n\nThere is new version of react-new-app"));
+    console.log("\n" + installedVersion + " --> " + latestVersion);
+    console.log("Please update with -> " + "npm " + chalk.red("update ") + "react-new-app -g");
+  }
 
   // execCommands("npm init -y");
 }
