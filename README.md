@@ -9,13 +9,13 @@
 ## Installation
 
 ```sh
-    npm install react-new -g
+    npm install react-new-app -g
 ```
 
 or
 
 ```sh
-    yarn global add react-new
+    yarn global add react-new-app
 ```
 
 ## Usage
@@ -26,19 +26,19 @@ or
 
 - give name to project
 
-![picuter1](./images/first.png)
+![picuter1](https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/first.png)
 
 - select component kind
 
-![picture2](./images/second.png)
+![picture2]https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/second.png)
 
 - choose options (will add future)
 
-![picture3](./images/third.png)
+![picture3](https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/third.png)
 
 - wait for dependencies and steps
 
-![picture4](./images/forth.png)
+![picture4](https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/forth.png)
 
 ### when finished
 
