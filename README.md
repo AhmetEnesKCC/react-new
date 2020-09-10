@@ -58,6 +58,15 @@ for example
 
 ### DONE 🎉🎉🎉
 
+# Changelog
+
+- 0.1.8
+  - Added 2 new options
+    - bootstrap
+    - font awesome 5
+
+---
+
 Author : AhmetEnesKCC
 
 github : https://github.com/AhmetEnesKCC
