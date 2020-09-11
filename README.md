@@ -60,13 +60,17 @@ for example
 
 # Will Come in Future
 
-- Typescrtip support
+- Typescript support
 
 - Detailed opening page
 
-- OPtimizations
+- Optimizations
 
 # Changelog
+
+- 0.2.3
+
+  - Fixed sass
 
 - 0.2.1
 
