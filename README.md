@@ -68,6 +68,10 @@ for example
 
 # Changelog
 
+- 0.2.3
+
+  - Fixed sass
+
 - 0.2.1
 
   - Fixed Font Awesome not installing issues
