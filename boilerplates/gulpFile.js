@@ -8,7 +8,7 @@ sass.compiler = require("node-sass");
 
 gulp.task("sass", async () => {
   gulp
-    .src("./styles/sass/**/*.scss")
+    .src("./styles/scss/**/*.scss")
     .pipe(
       sass().on("error", (err) => {
         console.log(err);

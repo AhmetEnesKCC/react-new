@@ -17,7 +17,7 @@ const execa = require("execa");
 var globalValue = "New_Project";
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
-const check_connection = require("check-internet-connected");
+const checkInternetConnected = require("check-internet-connected");
 
 // check internet connection
 
@@ -40,6 +40,7 @@ async function promptForMissingOptions(options) {
 
   const questions = [];
   const autoFix = (string) => {
+    string = string.trim();
     for (let i = 0; i < string.length; i++) {
       if (string[i] === " " && string[i + 1] === " ") {
         string = string.slice(i, 1);
@@ -122,6 +123,24 @@ export async function cli(args) {
     );
   }
   let yarn = true;
+  const testConnection = new Listr([
+    {
+      title: "Checking internet connection",
+      task: () => {
+        checkInternetConnected()
+          .then((res) => {
+            console.log("internet connection stable.");
+          })
+          .catch((ex) => {
+            console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
+            console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
+
+            process.exit();
+          });
+      },
+    },
+  ]);
+  await testConnection.run().catch((err) => console.log(err));
   const testYarn = new Listr([
     {
       title: "Testing for yarn",
@@ -137,7 +156,7 @@ export async function cli(args) {
       task: () => execa("npm", ["install", "yarn", "-g"]),
     },
   ]);
-  await testYarn.run().catch((err) => console.log(err));
+  testYarn.run().catch((err) => console.log(err));
   let packageArray = [];
 
   let installPackages = mustInstallPackages.map((pack) => {
