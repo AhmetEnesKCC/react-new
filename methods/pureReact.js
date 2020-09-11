@@ -47,7 +47,7 @@ const createPureReact = (options) => {
 
   if (sass) {
     fs.writeFileSync(path.join(process.cwd(), `/${src}/gulpFile.js`), gulpFile);
-    fs.writeFileSync(path.join(process.cwd(), `/${src}/styles/scss/main.scss`));
+    fs.writeFileSync(path.join(process.cwd(), `/${src}/styles/scss/main.scss`), cssFile);
   }
   if (redux) {
     fs.writeFileSync(path.join(process.cwd(), `/${src}/redux/reducers.js`), reduxReducers);
