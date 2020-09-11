@@ -117,8 +117,8 @@ export async function cli(args) {
   if (options.options.includes("font awesome 5")) {
     mustInstallPackages.push(
       "@fortawesome/fontawesome-svg-core",
-      " @fortawesome/free-solid-svg-icons",
-      " @fortawesome/react-fontawesome"
+      "@fortawesome/free-solid-svg-icons",
+      "@fortawesome/react-fontawesome"
     );
   }
   let yarn = true;

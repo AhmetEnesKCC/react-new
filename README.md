@@ -58,7 +58,23 @@ for example
 
 ### DONE 🎉🎉🎉
 
+# Will Come in Future
+
+- Typescrtip support
+
+- Detailed opening page
+
+- OPtimizations
+
 # Changelog
+
+- 0.2.1
+
+  - Fixed Font Awesome not installing issues
+
+- 0.1.9
+
+  - Added logo
 
 - 0.1.8
   - Added 2 new options
