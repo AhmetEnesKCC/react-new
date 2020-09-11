@@ -52,4 +52,22 @@ export function createManifestJson(options) {
   );
 }
 
+export function createReactNewAppConfigJSON(options, installedVersion) {
+  let optArr = [];
+  options.options.map((opt) => {
+    optArr.push(`"${opt}"`);
+  });
+  fs.writeFileSync(
+    path.join(process.cwd(), options.project_name, "react_new_app.config.json"),
+    `
+  {
+    "name": "${options.project_name}",
+    "varsion": "${installedVersion}",
+    "selected_packages": [${optArr}],
+    "official": "true"
+  }
+  `
+  );
+}
+
 export default execCommands;

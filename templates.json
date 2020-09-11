@@ -1,0 +1,4 @@
+[
+  { "name": "my_template", "base": "Function", "choices": ["redux"] },
+  { "name": "new_template", "base": "Function", "choices": ["redux"] }
+]
