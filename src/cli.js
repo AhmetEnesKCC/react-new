@@ -2,7 +2,6 @@
 
 import arg from "arg";
 import inquirer from "inquirer";
-const execa = require("execa");
 // import CLI from "clui";
 import { createNpmFile, createManifestJson } from "../methods/execCommands";
 import path from "path";
@@ -14,11 +13,22 @@ import fs from "fs";
 import Listr from "listr";
 import { title } from "process";
 import figlet from "figlet";
+const execa = require("execa");
 var globalValue = "New_Project";
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
-// LOGO
+const check_connection = require("check-internet-connected");
 
+// check internet connection
+
+// check_connection()
+//   .then((result) => {
+//     console.log(result);
+//   })
+//   .catch((error) => {
+//     throw "No internet connection. Please activate internet for use react-new-app";
+//   });
+// LOGO
 clear();
 console.log("\n");
 console.log(chalk.green(figlet.textSync("React New App", { horizontalLayout: "full" })));
@@ -197,6 +207,7 @@ export async function cli(args) {
         );
       },
     },
+
     {
       title: "Installing Dependencies",
       task: () => new Listr(packageArray),
