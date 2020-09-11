@@ -225,7 +225,7 @@ export async function cli(args) {
     console.log(`gulp`);
   }
   console.log("Thank You For used React New");
-  if (Latest) {
+  if (!Latest) {
     console.log(chalk.yellow("\n\nThere is new version of react-new-app"));
     console.log("\n" + installedVersion + " --> " + latestVersion);
     console.log("Please update with -> " + "npm " + chalk.red("update ") + "react-new-app -g");
