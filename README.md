@@ -60,11 +60,11 @@ for example
 
 # Will Come in Future
 
-- Typescrtip support
+- Typescript support
 
 - Detailed opening page
 
-- OPtimizations
+- Optimizations
 
 # Changelog
 
