@@ -78,6 +78,12 @@ for example
 
     - Faster environment
 
+  - Added react_new_app.config.json
+
+    - Will add new commands in future
+
+    - You can look your selected packages and package version
+
   - Minor optimizations
 
 - 0.2.3

@@ -2,6 +2,7 @@ var shell = require("shelljs");
 import fs from "fs";
 import path from "path";
 import templateJson from "../templates.json";
+import execa from "execa";
 function execCommands(command) {
   shell.exec(command);
 }
@@ -53,8 +54,15 @@ export function createManifestJson(options) {
   );
 }
 
-export function createReactNewAppConfigJSON(options, installedVersion) {
+export async function createReactNewAppConfigJSON(options) {
   let optArr = [];
+  let installedVersion;
+  await execa("npm", ["list", "react-new-app", "-g"]).then((result) => {
+    if (result.stdout !== "") {
+      var index = result.stdout.indexOf("react-new-app");
+      installedVersion = result.stdout.slice(index + 14, index + 19);
+    }
+  });
   options.options.map((opt) => {
     optArr.push(`"${opt}"`);
   });

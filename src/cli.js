@@ -18,7 +18,7 @@ const execa = require("execa");
 var globalValue = "New_Project";
 const mustInstallPackages = [];
 var packages = {
-  react: ["react", "react-dom", "react-scripts"],
+  react: ["react", "react-dom"],
   sass: ["gulp-sass", "gulp", "gulp-autoprefixer", "gulp-minify-css", "gulp-sourcemaps"],
   redux: ["redux", "react-redux", "redux-thunk"],
   router: ["redux", "react-redux", "redux-thunk"],
@@ -29,9 +29,8 @@ var packages = {
     "@fortawesome/react-fontawesome",
   ],
 };
-var template = {};
 mustInstallPackages.push(...packages.react);
-
+var saveAsTemplate = false;
 const checkInternetConnected = require("check-internet-connected");
 const templatesArray = [];
 templates.map((template) => {
@@ -160,6 +159,9 @@ let new_template;
 export async function cli(args) {
   let options;
   options = await promptForMissingOptions(args);
+  if (options.save === "Yes") {
+    saveAsTemplate = true;
+  }
   new_template = options;
   var project_name = options.project_name;
   if (templateWillBe === true && templates.length > 0) {
@@ -298,14 +300,14 @@ export async function cli(args) {
   ]);
   await tasks.run().catch((err) => console.log(err));
 
-  console.log(chalk.yellow("Thank you for used react-new"));
-  console.log(chalk.green("Recommended"));
+  console.log(chalk.yellow("\nThank you for used react-new"));
+  console.log(chalk.green("\nRecommended"));
   console.log(`cd ${options.project_name}`);
-  console.log(`npm start`);
+  console.log(`npm start\n`);
   if (options.options.includes("sass")) {
-    console.log(chalk.red("For sass ==>"));
+    console.log(chalk.red("\nFor sass ==>"));
     console.log("cd src");
-    console.log(`gulp`);
+    console.log(`gulp\n`);
   }
   console.log("Thank You For used React New");
   if (!Latest) {
@@ -320,7 +322,7 @@ export async function cli(args) {
 async function promptForTemplateName(options) {
   const defaultName = "my_template";
   const questions = [];
-  if (templateWillBe === false) {
+  if (templateWillBe === false && saveAsTemplate === true) {
     questions.push({
       type: "input",
       name: "template_name",
@@ -346,7 +348,7 @@ async function promptForTemplateName(options) {
 }
 
 export async function save_as_template(args) {
-  if (templateWillBe === false) {
+  if (templateWillBe === false && saveAsTemplate === true) {
     let options = await promptForTemplateName(args);
     new_template.name = options.name;
     const templateNameTask = new Listr([
