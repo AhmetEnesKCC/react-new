@@ -1,6 +1,7 @@
 var shell = require("shelljs");
 import fs from "fs";
 import path from "path";
+import templateJson from "../templates.json";
 function execCommands(command) {
   shell.exec(command);
 }
@@ -68,6 +69,26 @@ export function createReactNewAppConfigJSON(options, installedVersion) {
   }
   `
   );
+}
+
+export function addTemplate(options) {
+  let optArr = [];
+  let tempArr = [];
+
+  templateJson.map((temp) => {
+    let tempOptions = [];
+    temp.options.map((opt) => {
+      tempOptions.push(`"${opt}"`);
+    });
+    tempArr.push(`{"name" : "${temp.name}", "base" : "${temp.base}", "options" : [${tempOptions}] }`);
+  });
+  options.options.map((opt) => {
+    optArr.push(`"${opt}"`);
+  });
+  var templateString = `{"name" : "${options.name}","base" : "${options.base}", "options" : [${optArr}]}`;
+  tempArr.push(templateString);
+  var allTemplates = `[${tempArr}]`;
+  fs.writeFileSync(path.join(__dirname, "../templates.json"), allTemplates);
 }
 
 export default execCommands;

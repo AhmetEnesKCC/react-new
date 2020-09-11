@@ -3,7 +3,7 @@
 import arg from "arg";
 import inquirer from "inquirer";
 // import CLI from "clui";
-import { createNpmFile, createManifestJson, createReactNewAppConfigJSON } from "../methods/execCommands";
+import { createNpmFile, createManifestJson, createReactNewAppConfigJSON, addTemplate } from "../methods/execCommands";
 import path from "path";
 import clear from "clear";
 import chalk from "chalk";
@@ -29,6 +29,7 @@ var packages = {
     "@fortawesome/react-fontawesome",
   ],
 };
+var template = {};
 mustInstallPackages.push(...packages.react);
 
 const checkInternetConnected = require("check-internet-connected");
@@ -40,10 +41,12 @@ templates.map((template) => {
 
 // LOGO
 clear();
+
 console.log("\n");
 console.log(chalk.green(figlet.textSync("React New App", { horizontalLayout: "full" })));
 console.log("\n");
 var templateWillBe = true;
+var selected_template = "";
 async function promptForTemplate(options) {
   const defaultTemplate = "No";
   const questions = [];
@@ -68,7 +71,10 @@ async function promptForTemplate(options) {
 
 export async function cli_template(args) {
   let options = await promptForTemplate(args);
-  if (options && options.template === "No") {
+  if (options) {
+    selected_template = options.template;
+  }
+  if ((options && options.template === "No") || templates.length === 0) {
     templateWillBe = false;
   }
 }
@@ -89,34 +95,34 @@ async function promptForMissingOptions(options) {
     return string;
   };
 
-  if (templateWillBe === false || templates.length === 0) {
-    questions.push({
-      type: "input",
-      name: "project_name",
-      message: "Please enter a valid name for your new react project",
-      default: "New Project",
-      validate: async function (value) {
-        if (value.length > 0) {
-          if (
-            fs.readdirSync(process.cwd()).indexOf(value) >= 0 ||
-            (fs.readdirSync(process.cwd()).indexOf("new_project") >= 0 && value === "New Project")
-          ) {
-            return "There is already a folder named : " + autoFix(value);
-          }
-          if (value !== autoFix(value)) {
-            options.project_name = autoFix(value);
-            clear();
-            console.log(chalk.yellow("\nfixing name\n"));
-            return true;
-          } else {
-            options.project_name = value;
-            return true;
-          }
-        } else {
-          return "Please Enter a valid name";
+  questions.push({
+    type: "input",
+    name: "project_name",
+    message: "Please enter a valid name for your new react project",
+    default: "New Project",
+    validate: async function (value) {
+      if (value.length > 0) {
+        if (
+          fs.readdirSync(process.cwd()).indexOf(value) >= 0 ||
+          (fs.readdirSync(process.cwd()).indexOf("new_project") >= 0 && value === "New Project")
+        ) {
+          return "There is already a folder named : " + autoFix(value);
         }
-      },
-    });
+        if (value !== autoFix(value)) {
+          options.project_name = autoFix(value);
+          clear();
+          console.log(chalk.yellow("\nfixing name\n"));
+          return true;
+        } else {
+          options.project_name = value;
+          return true;
+        }
+      } else {
+        return "Please Enter a valid name";
+      }
+    },
+  });
+  if (templateWillBe === false || templates.length === 0) {
     questions.push({
       type: "list",
       name: "base",
@@ -146,170 +152,151 @@ async function promptForMissingOptions(options) {
     redux: options.redux || answers.redux,
     options: options.options || answers.options,
     template: options.use_template || answers.use_template,
+    save: options.save || answers.save,
   };
 }
+let new_template;
 
 export async function cli(args) {
-  let options = await promptForMissingOptions(args);
-
-  if (templateWillBe === false || templates.length === 0) {
-    if (options.options.includes("Redux".toLowerCase())) {
-      mustInstallPackages.push(...packages.redux);
-    }
-    if (options.options.includes("Sass".toLowerCase())) {
-      mustInstallPackages.push(...packages.sass);
-    }
-    if (options.options.includes("React-Router".toLowerCase())) {
-      mustInstallPackages.push(...packages.router);
-    }
-    if (options.options.includes("bootstrap")) {
-      mustInstallPackages.push(...packages.bootstrap);
-    }
-    if (options.options.includes("font awesome 5")) {
-      mustInstallPackages.push(...packages.fontawesome);
-    }
-
-    const testConnection = new Listr([
-      {
-        title: "Checking internet connection",
-        task: () => {
-          checkInternetConnected()
-            .then((res) => {
-              console.log("internet connection stable.");
-            })
-            .catch((ex) => {
-              console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
-              console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
-
-              process.exit();
-            });
-        },
-      },
-    ]);
-    await testConnection.run().catch((err) => console.log(err));
-    const testYarn = new Listr([
-      {
-        title: "Testing for yarn",
-        task: (ctx, task) =>
-          execa("yarn").catch(() => {
-            ctx.yarn = false;
-            task.skip("Yarn is not installed. Installing now");
-          }),
-      },
-      {
-        title: "Installing Yarn",
-        enabled: (ctx) => ctx.yarn === false,
-        task: () => execa("npm", ["install", "yarn", "-g"]),
-      },
-    ]);
-    testYarn.run().catch((err) => console.log(err));
-    let packageArray = [];
-
-    let installPackages = mustInstallPackages.map((pack) => {
-      packageArray.push({
-        title: "Installing " + pack,
-        task: () => execa("yarn", ["add", pack], { cwd: path.join(process.cwd(), options.project_name) }),
-      });
-    });
-    var installedVersion = "";
-    var latestVersion = "";
-
-    var Latest = true;
-    let isReactNewAppLatest = () => {
-      execa("npm", ["list", "react-new-app", "-g"]).catch((result) => {
-        var index = result.indexOf("react-new-app");
-        installedVersion = result.slice(index + 13, index + 18);
-        console.log(installedVersion);
-      });
-      execa("npm", ["view", "react-new-app", "version"]).catch((result) => {
-        latestVersion = result;
-        console.log(latestVersion);
-      });
-      if (latestVersion != installedVersion) {
-        Latest = false;
-      }
-    };
-
-    const tasks = new Listr([
-      {
-        title: "Creating Files",
-        task: async () => {
-          return new Listr(
-            [
-              {
-                title: "copying folders and files",
-                task: async () => {
-                  return createPureReact(options);
-                },
-              },
-              {
-                title: "creating package.json",
-                task: async () => {
-                  createNpmFile(options, mustInstallPackages);
-                  createManifestJson(options);
-                },
-              },
-              {
-                title: "Checking version of React New App",
-                task: () => {
-                  execa("npm", ["list", "react-new-app", "-g"]).then((result) => {
-                    if (result.stdout !== "") {
-                      var index = result.stdout.indexOf("react-new-app");
-                      installedVersion = result.stdout.slice(index + 14, index + 19);
-                    }
-                  });
-                  execa("npm", ["view", "react-new-app", "version"]).then((result) => {
-                    latestVersion = result.stdout;
-                  });
-
-                  if (latestVersion !== installedVersion) {
-                    Latest = false;
-                  }
-                },
-              },
-              {
-                title: "Creating react_new_app.config.json",
-                task: async () => createReactNewAppConfigJSON(options, installedVersion),
-              },
-            ],
-            { concurrent: true }
-          );
-        },
-      },
-
-      {
-        title: "Installing Dependencies",
-        task: () => new Listr(packageArray),
-      },
-    ]);
-    await tasks.run().catch((err) => console.log(err));
-  } else {
-    let template_options = templates;
-    const template_task = new Listr([
-      {
-        title: "Checking version of React New App",
-        task: async () => {
-          execa("npm", ["list", "react-new-app", "-g"]).then((result) => {
-            if (result.stdout !== "") {
-              var index = result.stdout.indexOf("react-new-app");
-              installedVersion = result.stdout.slice(index + 14, index + 19);
-            }
-          });
-          execa("npm", ["view", "react-new-app", "version"]).then((result) => {
-            latestVersion = result.stdout;
-          });
-
-          if (latestVersion !== installedVersion) {
-            Latest = false;
-          }
-        },
-      },
-      {
-        title: "Creating react_new_app.config.json",
-        task: async () => createReactNewAppConfigJSON(options, installedVersion),
-      },
-    ]);
+  let options;
+  options = await promptForMissingOptions(args);
+  new_template = options;
+  var project_name = options.project_name;
+  if (templateWillBe === true && templates.length > 0) {
+    options = templates.find((temp) => temp.name === selected_template);
+    options.project_name = project_name;
+    new_template = options;
   }
+  if (options.options.includes("Redux".toLowerCase())) {
+    mustInstallPackages.push(...packages.redux);
+  }
+  if (options.options.includes("Sass".toLowerCase())) {
+    mustInstallPackages.push(...packages.sass);
+  }
+  if (options.options.includes("React-Router".toLowerCase())) {
+    mustInstallPackages.push(...packages.router);
+  }
+  if (options.options.includes("bootstrap")) {
+    mustInstallPackages.push(...packages.bootstrap);
+  }
+  if (options.options.includes("font awesome 5")) {
+    mustInstallPackages.push(...packages.fontawesome);
+  }
+
+  const testConnection = new Listr([
+    {
+      title: "Checking internet connection",
+      task: () => {
+        checkInternetConnected()
+          .then((res) => {
+            console.log("internet connection stable.");
+          })
+          .catch((ex) => {
+            console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
+            console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
+
+            process.exit();
+          });
+      },
+    },
+  ]);
+  await testConnection.run().catch((err) => console.log(err));
+  const testYarn = new Listr([
+    {
+      title: "Testing for yarn",
+      task: (ctx, task) =>
+        execa("yarn").catch(() => {
+          ctx.yarn = false;
+          task.skip("Yarn is not installed. Installing now");
+        }),
+    },
+    {
+      title: "Installing Yarn",
+      enabled: (ctx) => ctx.yarn === false,
+      task: () => execa("npm", ["install", "yarn", "-g"]),
+    },
+  ]);
+  testYarn.run().catch((err) => console.log(err));
+  let packageArray = [];
+
+  let installPackages = mustInstallPackages.map((pack) => {
+    packageArray.push({
+      title: "Installing " + pack,
+      task: () => execa("yarn", ["add", pack], { cwd: path.join(process.cwd(), options.project_name) }),
+    });
+  });
+  var installedVersion = "";
+  var latestVersion = "";
+
+  var Latest = true;
+  let isReactNewAppLatest = () => {
+    execa("npm", ["list", "react-new-app", "-g"]).catch((result) => {
+      var index = result.indexOf("react-new-app");
+      installedVersion = result.slice(index + 13, index + 18);
+      console.log(installedVersion);
+    });
+    execa("npm", ["view", "react-new-app", "version"]).catch((result) => {
+      latestVersion = result;
+      console.log(latestVersion);
+    });
+    if (latestVersion != installedVersion) {
+      Latest = false;
+    }
+  };
+
+  const tasks = new Listr([
+    {
+      title: "Creating Files",
+      task: async () => {
+        return new Listr(
+          [
+            {
+              title: "copying folders and files",
+              task: async () => {
+                return createPureReact(options);
+              },
+            },
+            {
+              title: "creating package.json",
+              task: async () => {
+                createNpmFile(options, mustInstallPackages);
+                createManifestJson(options);
+              },
+            },
+            {
+              title: "Checking version of React New App",
+              task: () => {
+                execa("npm", ["list", "react-new-app", "-g"]).then((result) => {
+                  if (result.stdout !== "") {
+                    var index = result.stdout.indexOf("react-new-app");
+                    installedVersion = result.stdout.slice(index + 14, index + 19);
+                  }
+                });
+                execa("npm", ["view", "react-new-app", "version"]).then((result) => {
+                  latestVersion = result.stdout;
+                });
+
+                if (latestVersion !== installedVersion) {
+                  Latest = false;
+                }
+              },
+            },
+            {
+              title: "Creating react_new_app.config.json",
+              task: async () => createReactNewAppConfigJSON(options, installedVersion),
+            },
+          ],
+          { concurrent: true }
+        );
+      },
+    },
+
+    {
+      title: "Installing Dependencies",
+      task: () => new Listr(packageArray),
+    },
+  ]);
+  await tasks.run().catch((err) => console.log(err));
 
   console.log(chalk.yellow("Thank you for used react-new"));
   console.log(chalk.green("Recommended"));
@@ -339,21 +326,37 @@ async function promptForTemplateName(options) {
       name: "template_name",
       message: "Please enter your template name",
       default: defaultName,
+      validate: (value) => {
+        var temp_names = [];
+        templates.map((temp) => {
+          temp_names.push(temp.name);
+        });
+        if (temp_names.includes(value)) {
+          return "There are already named template : " + value;
+        }
+        return true;
+      },
     });
   }
+  const answers = await inquirer.prompt(questions);
+  return {
+    ...options,
+    name: options.template_name || answers.template_name,
+  };
 }
 
 export async function save_as_template(args) {
-  let options = await promptForTemplateName(args);
-  const templateNameTask = new Listr([
-    {
-      title: "Adding Template",
-      task: () => {
-        console.log("Hello");
+  if (templateWillBe === false) {
+    let options = await promptForTemplateName(args);
+    new_template.name = options.name;
+    const templateNameTask = new Listr([
+      {
+        title: "Adding Template",
+        task: () => addTemplate(new_template),
       },
-    },
-  ]);
-  await templateNameTask.run().catch((err) => {
-    console.log(err);
-  });
+    ]);
+    await templateNameTask.run().catch((err) => {
+      console.log(err);
+    });
+  }
 }

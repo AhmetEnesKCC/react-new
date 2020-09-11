@@ -66,7 +66,19 @@ for example
 
 - Optimizations
 
+- Templates ( 'updated' )
+
 # Changelog
+
+- 0.2.7
+
+  - Added Templates
+
+    - You can add your custom config as template.
+
+    - Faster environment
+
+  - Minor optimizations
 
 - 0.2.3
 
