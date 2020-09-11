@@ -16,12 +16,10 @@ import figlet from "figlet";
 import templates from "../templates.json";
 const execa = require("execa");
 var globalValue = "New_Project";
-<<<<<<< HEAD
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
 const checkInternetConnected = require("check-internet-connected");
 
-=======
 const mustInstallPackages = [];
 var packages = {
   react: ["react", "react-dom"],
@@ -42,7 +40,6 @@ const templatesArray = [];
 templates.map((template) => {
   templatesArray.push(template.name);
 });
->>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 // check internet connection
 
 // LOGO
@@ -191,11 +188,8 @@ export async function cli(args) {
   if (options.options.includes("font awesome 5")) {
     mustInstallPackages.push(...packages.fontawesome);
   }
-<<<<<<< HEAD
   let yarn = true;
-=======
 
->>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
   const testConnection = new Listr([
     {
       title: "Checking internet connection",
@@ -206,11 +200,8 @@ export async function cli(args) {
           })
           .catch((ex) => {
             console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
-<<<<<<< HEAD
             // console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
-=======
             console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
->>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 
             process.exit();
           });
