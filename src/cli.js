@@ -18,7 +18,7 @@ const execa = require("execa");
 var globalValue = "New_Project";
 const mustInstallPackages = [];
 var packages = {
-  react: ["react", "react-dom"],
+  react: ["react", "react-dom", "react-scripts"],
   sass: ["gulp-sass", "gulp", "gulp-autoprefixer", "gulp-minify-css", "gulp-sourcemaps"],
   redux: ["redux", "react-redux", "redux-thunk"],
   router: ["redux", "react-redux", "redux-thunk"],
