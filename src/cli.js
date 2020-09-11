@@ -133,7 +133,7 @@ export async function cli(args) {
           })
           .catch((ex) => {
             console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
-            console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
+            // console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
 
             process.exit();
           });
