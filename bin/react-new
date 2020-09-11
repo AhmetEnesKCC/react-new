@@ -1,4 +1,10 @@
 #!/usr/bin/env node
 
 require = require("esm")(module);
-require("../src/cli").cli(process.argv);
+const cli_funcs = async () => {
+  await require("../src/cli").cli_template(process.argv);
+  await require("../src/cli").cli(process.argv);
+  await require("../src/cli").save_as_template(process.argv);
+};
+
+cli_funcs();

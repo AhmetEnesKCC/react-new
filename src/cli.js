@@ -3,7 +3,7 @@
 import arg from "arg";
 import inquirer from "inquirer";
 // import CLI from "clui";
-import { createNpmFile, createManifestJson } from "../methods/execCommands";
+import { createNpmFile, createManifestJson, createReactNewAppConfigJSON, addTemplate } from "../methods/execCommands";
 import path from "path";
 import clear from "clear";
 import chalk from "chalk";
@@ -13,31 +13,82 @@ import fs from "fs";
 import Listr from "listr";
 import { title } from "process";
 import figlet from "figlet";
+import templates from "../templates.json";
 const execa = require("execa");
 var globalValue = "New_Project";
+<<<<<<< HEAD
 const mustInstallPackages = ["react", "react-dom", "react-scripts"];
 
 const checkInternetConnected = require("check-internet-connected");
 
+=======
+const mustInstallPackages = [];
+var packages = {
+  react: ["react", "react-dom"],
+  sass: ["gulp-sass", "gulp", "gulp-autoprefixer", "gulp-minify-css", "gulp-sourcemaps"],
+  redux: ["redux", "react-redux", "redux-thunk"],
+  router: ["redux", "react-redux", "redux-thunk"],
+  bootstrap: ["bootstrap", "react-bootstrap"],
+  fontawesome: [
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-solid-svg-icons",
+    "@fortawesome/react-fontawesome",
+  ],
+};
+mustInstallPackages.push(...packages.react);
+var saveAsTemplate = false;
+const checkInternetConnected = require("check-internet-connected");
+const templatesArray = [];
+templates.map((template) => {
+  templatesArray.push(template.name);
+});
+>>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 // check internet connection
 
-// check_connection()
-//   .then((result) => {
-//     console.log(result);
-//   })
-//   .catch((error) => {
-//     throw "No internet connection. Please activate internet for use react-new-app";
-//   });
 // LOGO
 clear();
+
 console.log("\n");
 console.log(chalk.green(figlet.textSync("React New App", { horizontalLayout: "full" })));
 console.log("\n");
+var templateWillBe = true;
+var selected_template = "";
+async function promptForTemplate(options) {
+  const defaultTemplate = "No";
+  const questions = [];
+  if (templates.length > 0) {
+    questions.push({
+      type: "list",
+      name: "template",
+      message: "Do you want to use template if not no select one from above.",
+      choices: ["No", new inquirer.Separator()].concat(templatesArray),
+      default: defaultTemplate,
+    });
+  } else {
+    return;
+  }
+
+  const answers = await inquirer.prompt(questions);
+  return {
+    ...options,
+    template: options.template || answers.template,
+  };
+}
+
+export async function cli_template(args) {
+  let options = await promptForTemplate(args);
+  if (options) {
+    selected_template = options.template;
+  }
+  if ((options && options.template === "No") || templates.length === 0) {
+    templateWillBe = false;
+  }
+}
 
 async function promptForMissingOptions(options) {
   const defaultTemplate = "JavaScript";
   const defaultBase = "Function";
-
+  var noTemplate = true;
   const questions = [];
   const autoFix = (string) => {
     string = string.trim();
@@ -49,6 +100,7 @@ async function promptForMissingOptions(options) {
     string = string.replace("-", "_").replace(" ", "_").toLowerCase();
     return string;
   };
+
   questions.push({
     type: "input",
     name: "project_name",
@@ -76,21 +128,28 @@ async function promptForMissingOptions(options) {
       }
     },
   });
+  if (templateWillBe === false || templates.length === 0) {
+    questions.push({
+      type: "list",
+      name: "base",
+      message: "Do you want function based or class based component ?",
+      choices: ["Class", "Function"],
+      default: defaultBase,
+    });
 
-  questions.push({
-    type: "list",
-    name: "base",
-    message: "Do you want function based or class based component ?",
-    choices: ["Class", "Function"],
-    default: defaultBase,
-  });
-
-  questions.push({
-    type: "checkbox",
-    name: "options",
-    message: "please select which one do you want to use",
-    choices: ["redux", "sass", "react-router", "bootstrap", "font awesome 5" /*, "typescript"*/], // will add TS later
-  });
+    questions.push({
+      type: "checkbox",
+      name: "options",
+      message: "please select which one do you want to use",
+      choices: ["redux", "sass", "react-router", "bootstrap", "font awesome 5" /*, "typescript"*/], // will add TS later
+    });
+    questions.push({
+      type: "list",
+      name: "save",
+      message: "Select yes if you want to save your template. ( Template name will ask when finish )",
+      choices: ["Yes", "No"], // will add TS later
+    });
+  }
 
   const answers = await inquirer.prompt(questions);
   return {
@@ -98,31 +157,45 @@ async function promptForMissingOptions(options) {
     base: options.base || answers.base,
     redux: options.redux || answers.redux,
     options: options.options || answers.options,
+    template: options.use_template || answers.use_template,
+    save: options.save || answers.save,
   };
 }
+let new_template;
 
 export async function cli(args) {
-  let options = await promptForMissingOptions(args);
+  let options;
+  options = await promptForMissingOptions(args);
+  if (options.save === "Yes") {
+    saveAsTemplate = true;
+  }
+  new_template = options;
+  var project_name = options.project_name;
+  if (templateWillBe === true && templates.length > 0) {
+    options = templates.find((temp) => temp.name === selected_template);
+    options.project_name = project_name;
+    new_template = options;
+  }
   if (options.options.includes("Redux".toLowerCase())) {
-    mustInstallPackages.push("redux", "react-redux", "redux-thunk");
+    mustInstallPackages.push(...packages.redux);
   }
   if (options.options.includes("Sass".toLowerCase())) {
-    mustInstallPackages.push("gulp-sass", "gulp", "gulp-autoprefixer", "gulp-minify-css", "gulp-sourcemaps");
+    mustInstallPackages.push(...packages.sass);
   }
   if (options.options.includes("React-Router".toLowerCase())) {
-    mustInstallPackages.push("react-router-dom", "react-router");
+    mustInstallPackages.push(...packages.router);
   }
   if (options.options.includes("bootstrap")) {
-    mustInstallPackages.push("bootstrap", "react-bootstrap");
+    mustInstallPackages.push(...packages.bootstrap);
   }
   if (options.options.includes("font awesome 5")) {
-    mustInstallPackages.push(
-      "@fortawesome/fontawesome-svg-core",
-      "@fortawesome/free-solid-svg-icons",
-      "@fortawesome/react-fontawesome"
-    );
+    mustInstallPackages.push(...packages.fontawesome);
   }
+<<<<<<< HEAD
   let yarn = true;
+=======
+
+>>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
   const testConnection = new Listr([
     {
       title: "Checking internet connection",
@@ -133,7 +206,11 @@ export async function cli(args) {
           })
           .catch((ex) => {
             console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
+<<<<<<< HEAD
             // console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
+=======
+            console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
+>>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 
             process.exit();
           });
@@ -146,13 +223,13 @@ export async function cli(args) {
       title: "Testing for yarn",
       task: (ctx, task) =>
         execa("yarn").catch(() => {
-          yarn = false;
-          task.skip("Installing yarn");
+          ctx.yarn = false;
+          task.skip("Yarn is not installed. Installing now");
         }),
     },
     {
       title: "Installing Yarn",
-      enabled: !yarn,
+      enabled: (ctx) => ctx.yarn === false,
       task: () => execa("npm", ["install", "yarn", "-g"]),
     },
   ]);
@@ -221,6 +298,10 @@ export async function cli(args) {
                 }
               },
             },
+            {
+              title: "Creating react_new_app.config.json",
+              task: async () => createReactNewAppConfigJSON(options, installedVersion),
+            },
           ],
           { concurrent: true }
         );
@@ -232,16 +313,16 @@ export async function cli(args) {
       task: () => new Listr(packageArray),
     },
   ]);
-
   await tasks.run().catch((err) => console.log(err));
-  console.log(chalk.yellow("Thank you for used react-new"));
-  console.log(chalk.green("Recommended"));
+
+  console.log(chalk.yellow("\nThank you for used react-new"));
+  console.log(chalk.green("\nRecommended"));
   console.log(`cd ${options.project_name}`);
-  console.log(`npm start`);
+  console.log(`npm start\n`);
   if (options.options.includes("sass")) {
-    console.log(chalk.red("For sass ==>"));
+    console.log(chalk.red("\nFor sass ==>"));
     console.log("cd src");
-    console.log(`gulp`);
+    console.log(`gulp\n`);
   }
   console.log("Thank You For used React New");
   if (!Latest) {
@@ -251,4 +332,48 @@ export async function cli(args) {
   }
 
   // execCommands("npm init -y");
+}
+
+async function promptForTemplateName(options) {
+  const defaultName = "my_template";
+  const questions = [];
+  if (templateWillBe === false && saveAsTemplate === true) {
+    questions.push({
+      type: "input",
+      name: "template_name",
+      message: "Please enter your template name",
+      default: defaultName,
+      validate: (value) => {
+        var temp_names = [];
+        templates.map((temp) => {
+          temp_names.push(temp.name);
+        });
+        if (temp_names.includes(value)) {
+          return "There are already named template : " + value;
+        }
+        return true;
+      },
+    });
+  }
+  const answers = await inquirer.prompt(questions);
+  return {
+    ...options,
+    name: options.template_name || answers.template_name,
+  };
+}
+
+export async function save_as_template(args) {
+  if (templateWillBe === false && saveAsTemplate === true) {
+    let options = await promptForTemplateName(args);
+    new_template.name = options.name;
+    const templateNameTask = new Listr([
+      {
+        title: "Adding Template",
+        task: () => addTemplate(new_template),
+      },
+    ]);
+    await templateNameTask.run().catch((err) => {
+      console.log(err);
+    });
+  }
 }

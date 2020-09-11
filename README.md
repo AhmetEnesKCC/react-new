@@ -66,11 +66,31 @@ for example
 
 - Optimizations
 
+- Templates ( 'updated' )
+
 # Changelog
 
+<<<<<<< HEAD
 - 0.2.4
 
   - Published on yarn
+=======
+- 0.2.7
+
+  - Added Templates
+
+    - You can add your custom config as template.
+
+    - Faster environment
+
+  - Added react_new_app.config.json
+
+    - Will add new commands in future
+
+    - You can look your selected packages and package version
+
+  - Minor optimizations
+>>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 
 - 0.2.3
 
