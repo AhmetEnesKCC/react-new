@@ -53,7 +53,7 @@ async function promptForTemplate(options) {
     questions.push({
       type: "list",
       name: "template",
-      message: "Do you want to use template if not no select one from above.",
+      message: "Do you want to use template.",
       choices: ["No", new inquirer.Separator()].concat(templatesArray),
       default: defaultTemplate,
     });
@@ -193,10 +193,19 @@ export async function cli(args) {
           .then((res) => {
             console.log("internet connection stable.");
           })
-          .catch((ex) => {
+          .catch(async (ex) => {
             console.log(chalk.red("\nNo internet connection. Please turn on your internet.\n"));
-            console.log(chalk.green("\nDo not worry your settings saved as <no internet> :D.\n"));
-
+            new_template.name = "<no internet>" + " " + new Date();
+            var tasks = new Listr([
+              {
+                title: "Saving your template as <no internet> + date",
+                task: () => {
+                  addTemplate(new_template);
+                },
+              },
+            ]);
+            await tasks.run().catch((err) => console.log(err));
+            console.log(chalk.green("\nDo not worry your settings saved as <no internet> + date .\n"));
             process.exit();
           });
       },
@@ -218,7 +227,7 @@ export async function cli(args) {
       task: () => execa("npm", ["install", "yarn", "-g"]),
     },
   ]);
-  testYarn.run().catch((err) => console.log(err));
+  await testYarn.run().catch((err) => console.log(err));
   let packageArray = [];
 
   let installPackages = mustInstallPackages.map((pack) => {

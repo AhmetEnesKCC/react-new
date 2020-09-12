@@ -24,6 +24,12 @@ or
     react-new-app
 ```
 
+or simply
+
+```sh
+    rna
+```
+
 - give name to project
 
 ![picuter1](https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/first.png?raw=true)
@@ -68,7 +74,19 @@ for example
 
 - Templates ( 'updated' )
 
+- Rearrange Templates
+
+- Delete Templates
+
 # Changelog
+
+- 0.2.9
+
+  - Added shortcut fot react-new-app : rna
+
+  - If you do not have internet connection your configs will be saved as 'no internet + "current date"'
+
+  - Fixed some minor bugs
 
 - 0.2.7
 
