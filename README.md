@@ -70,11 +70,6 @@ for example
 
 # Changelog
 
-<<<<<<< HEAD
-- 0.2.4
-
-  - Published on yarn
-=======
 - 0.2.7
 
   - Added Templates
@@ -90,7 +85,6 @@ for example
     - You can look your selected packages and package version
 
   - Minor optimizations
->>>>>>> 027ec7ac2ac811657576a4228057e0229676f3af
 
 - 0.2.3
 
@@ -108,26 +102,6 @@ for example
   - Added 2 new options
     - bootstrap
     - font awesome 5
-
----
-
-# Important
-
-### If you installed react-new-app with yarn you must add yarn bin path to environment variables
-
-```sh
-    yarn global bin
-```
-
-- Copy the output
-
-## For cmd
-
-- start > edit environment variables > environment variables > path > add > add copied output
-
-## For bash
-
-- PATH=\$PATH:< copied output >
 
 ---
 
