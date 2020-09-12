@@ -1,6 +1,6 @@
 {
   "name": "react-new-app",
-  "version": "0.2.8",
+  "version": "0.2.7",
   "description": "react cli",
   "main": "src/cli.js",
   "bin": {
@@ -43,8 +43,7 @@
     "src/",
     "images",
     "methods",
-    "bin",
-    "templates.json"
+    "bin"
   ],
   "devDependencies": {}
 }
