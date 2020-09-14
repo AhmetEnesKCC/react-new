@@ -1,6 +1,6 @@
 {
   "name": "react-new-app",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "react cli",
   "main": "src/cli.js",
   "bin": {
@@ -37,7 +37,8 @@
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.4",
+    "sudo-js": "^1.0.2"
   },
   "files": [
     "boilerplates/",

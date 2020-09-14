@@ -80,9 +80,19 @@ for example
 
 # Changelog
 
+- 0.3.0
+
+  - Added Linux support
+
+  - If you enter your sudo password wrong your template will be saved as wrong password + current date
+
+  - Fixed scss directory
+
+  - Little optimizations
+
 - 0.2.9
 
-  - Added shortcut fot react-new-app : rna
+  - Added shortcut for react-new-app : rna
 
   - If you do not have internet connection your configs will be saved as 'no internet + "current date"'
 
@@ -117,11 +127,18 @@ for example
   - Added logo
 
 - 0.1.8
+
   - Added 2 new options
+
     - bootstrap
+
     - font awesome 5
 
 ---
+
+# Important
+
+## If you installed react-new-app with yarn you must yarn directory to environment variables and path.
 
 Author : AhmetEnesKCC
 

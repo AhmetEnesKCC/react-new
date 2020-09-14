@@ -6,11 +6,11 @@ const sourcemaps = require("gulp-sourcemaps");
 
 sass.compiler = require("node-sass");
 
-gulp.task("sass", async () => {
+gulp.task("scss", async () => {
   gulp
-    .src("./styles/sass/**/*.scss")
+    .src("./styles/scss/**/*.scss")
     .pipe(
-      sass().on("error", (err) => {
+      sass().on("error", err => {
         console.log(err);
         this.emit("end");
       })
@@ -22,5 +22,5 @@ gulp.task("sass", async () => {
 });
 
 gulp.task("default", () => {
-  gulp.watch("./styles/**/*.scss", gulp.series("sass"));
+  gulp.watch("./styles/**/*.scss", gulp.series("scss"));
 });
