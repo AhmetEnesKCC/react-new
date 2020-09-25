@@ -1,1 +1,5 @@
 node_modules
+
+src/clean.js
+
+bin/rna-clean

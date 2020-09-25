@@ -472,6 +472,11 @@ inherits@2:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
+inpath@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/inpath/-/inpath-1.0.2.tgz#4ac219710ec7a72f460ff94bf424dd3ef0e52817"
+  integrity sha1-SsIZcQ7Hpy9GD/lL9CTdPvDlKBc=
+
 inquirer@^7.3.3:
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.3.3.tgz#04d176b2af04afc157a83fd7c100e98ee0aad003"
@@ -747,6 +752,11 @@ path-parse@^1.0.6:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
 
+pidof@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/pidof/-/pidof-1.0.2.tgz#fba0eae1c8335a11eb8099f5d0f3efbc45cb4e90"
+  integrity sha1-+6Dq4cgzWhHrgJn10PPvvEXLTpA=
+
 prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
@@ -954,6 +964,14 @@ strip-final-newline@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strip-final-newline/-/strip-final-newline-2.0.0.tgz#89b852fb2fcbe936f6f4b3187afb0a12c1ab58ad"
   integrity sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
+
+sudo-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/sudo-js/-/sudo-js-1.0.2.tgz#b676d706753a9a23ba78628cb8a23f7d4561d913"
+  integrity sha1-tnbXBnU6miO6eGKMuKI/fUVh2RM=
+  dependencies:
+    inpath "^1.0.2"
+    pidof "^1.0.2"
 
 supports-color@^2.0.0:
   version "2.0.0"

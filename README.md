@@ -24,6 +24,12 @@ or
     react-new-app
 ```
 
+or simply
+
+```sh
+    rna
+```
+
 - give name to project
 
 ![picuter1](https://github.com/AhmetEnesKCC/react-new/blob/0.1/images/first.png?raw=true)
@@ -60,15 +66,43 @@ for example
 
 # Will Come in Future
 
+- New Command rna clean ( fresh start with basic setup )
+
 - Typescript support
 
 - Detailed opening page
 
 - Optimizations
 
-- Templates ( 'updated' )
+- Templates ( 'updated' ) ( Arrived )
+
+- Rearrange Templates
+
+- Delete Templates
 
 # Changelog
+
+- 0.3.1
+
+  - fixed React-Router packages not installing issue.
+
+- 0.3.0
+
+  - Added Linux support
+
+  - If you enter your sudo password wrong your template will be saved as wrong password + current date
+
+  - Fixed scss directory
+
+  - Little optimizations
+
+- 0.2.9
+
+  - Added shortcut for react-new-app : rna
+
+  - If you do not have internet connection your configs will be saved as 'no internet + "current date"'
+
+  - Fixed some minor bugs
 
 - 0.2.7
 
@@ -99,11 +133,18 @@ for example
   - Added logo
 
 - 0.1.8
+
   - Added 2 new options
+
     - bootstrap
+
     - font awesome 5
 
 ---
+
+# Important
+
+## If you installed react-new-app with yarn you must yarn directory to environment variables and path.
 
 Author : AhmetEnesKCC
 
