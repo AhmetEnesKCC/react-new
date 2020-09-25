@@ -84,9 +84,6 @@ const parsePath = (path) => {
   return parsedArray;
 };
 
-console.log(path.parse(__dirname));
-
-console.log("\n");
 var templateWillBe = true;
 var selected_template = "";
 async function promptForTemplate(options) {
@@ -259,12 +256,6 @@ async function promptForMissingOptions(options) {
 let new_template;
 
 export async function cli(args) {
-  let options = parseArguments(args);
-  console.log(options);
-  if (options.init) {
-    myTemplate = {};
-    createReactNewAppConfigJSON(options);
-  }
   options = await promptForMissingOptions(args);
   if (options.save === "Yes") {
     saveAsTemplate = true;
