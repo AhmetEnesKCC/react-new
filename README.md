@@ -66,19 +66,25 @@ for example
 
 # Will Come in Future
 
+- New Command rna clean ( fresh start with basic setup )
+
 - Typescript support
 
 - Detailed opening page
 
 - Optimizations
 
-- Templates ( 'updated' )
+- Templates ( 'updated' ) ( Arrived )
 
 - Rearrange Templates
 
 - Delete Templates
 
 # Changelog
+
+- 0.3.1
+
+  - fixed React-Router packages not installing issue.
 
 - 0.3.0
 
