@@ -1,6 +1,6 @@
 {
   "name": "react-new-app",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "react cli",
   "main": "src/cli.js",
   "bin": {

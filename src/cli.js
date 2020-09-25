@@ -256,7 +256,7 @@ async function promptForMissingOptions(options) {
 let new_template;
 
 export async function cli(args) {
-  options = await promptForMissingOptions(args);
+  var options = await promptForMissingOptions(args);
   if (options.save === "Yes") {
     saveAsTemplate = true;
   }
@@ -318,8 +318,8 @@ export async function cli(args) {
     },
     {
       title: "Checking OS",
-      task: () => {
-        let ostype = OS.type();
+      task: async () => {
+        let ostype = await OS.type();
         console.log("Your os is : " + ostype);
       },
     },
