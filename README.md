@@ -82,6 +82,10 @@ for example
 
 # Changelog
 
+- 0.3.4
+
+  - Fixed No Options Issue
+
 - 0.3.3
 
   - Minor optimizations
