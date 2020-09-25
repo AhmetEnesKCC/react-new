@@ -4,8 +4,8 @@
   "description": "react cli",
   "main": "src/cli.js",
   "bin": {
-    "react-new-app": "bin/react-new",
-    "rna": "bin/react-new"
+    "react-new-app": "bin/rna-new",
+    "rna": "bin/rna-new"
   },
   "publishConfig": {
     "access": "public"
@@ -48,5 +48,8 @@
     "bin",
     "templates.json"
   ],
-  "devDependencies": {}
+  "devDependencies": {},
+  "prettier": {
+    "trailingComma": "all"
+  }
 }
