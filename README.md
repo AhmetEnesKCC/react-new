@@ -82,6 +82,14 @@ for example
 
 # Changelog
 
+- 0.3.3
+
+  - Minor optimizations
+
+- 0.3.2
+
+  - Fixed minor bugs
+
 - 0.3.1
 
   - fixed React-Router packages not installing issue.
