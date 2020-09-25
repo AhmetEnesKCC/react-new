@@ -58,6 +58,7 @@ clear();
 var yarn = true;
 var clean = "--clean" || "-c";
 var init = "--init" || "-i";
+var version = "--version" || "-v";
 
 console.log("\n");
 console.log(
@@ -132,8 +133,10 @@ function parseArguments(rawArgs) {
     {
       "--init": Boolean,
       "--clean": Boolean,
+      "--version": Boolean,
       "-i": "--init",
       "-c": "--clean",
+      "-v": "--version",
     },
     {
       argv: rawArgs.slice(2),
@@ -142,6 +145,7 @@ function parseArguments(rawArgs) {
   return {
     init: args["--init"] || false,
     clean: args["--clean"] || false,
+    version: args["--version"] || false,
   };
 }
 
